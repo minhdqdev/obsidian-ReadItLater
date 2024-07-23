@@ -50,6 +50,13 @@ class WebsiteParser extends Parser {
         const cleanDocumentBody = DOMPurify.sanitize(document.body.innerHTML);
         document.body.innerHTML = cleanDocumentBody;
 
+        document.body.querySelectorAll('h1, h2, h3, h4, h5, h6')?.forEach(header => {
+            // Readability.js will strip out headings from the dom if certain words appear in their className
+            // See: https://github.com/mozilla/readability/issues/807  
+            header.className = '';
+            header.outerHTML = header.outerHTML;  
+        });
+
         if (!isProbablyReaderable(document)) {
             new Notice('@mozilla/readability considers this document to unlikely be readerable.');
         }
